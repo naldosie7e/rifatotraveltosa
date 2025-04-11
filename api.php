@@ -1,9 +1,9 @@
 <?php
 // Database connection details
-$host = 'localhost';
-$dbname = 'rifatosan';
-$username = 'root';
-$password = 'Sowhatseven7*';
+$host = 'sql312.infinityfree.com';
+$dbname = 'if0_38705671_rifatosan';
+$username = 'if0_38705671';
+$password = 'Sowhatseven7';
 
 try {
     // Connect to the database
@@ -25,9 +25,10 @@ try {
     // Check if the request is a POST request
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Get the data from the POST request
-        $numberSold = isset($_POST['number_sold']) ? (int)$_POST['number_sold'] : null;
-        $customName = isset($_POST['custom_name']) ? trim($_POST['custom_name']) : null;
-        $phoneNumber = isset($_POST['phone_number']) ? trim($_POST['phone_number']) : null;
+        $input = json_decode(file_get_contents('php://input'), true);
+        $numberSold = isset($input['number']) ? (int)$input['number'] : null;
+        $customName = isset($input['name']) ? trim($input['name']) : null;
+        $phoneNumber = isset($input['phone']) ? trim($input['phone']) : null;
 
         if ($numberSold !== null && $customName && $phoneNumber) {
             // Insert the data into the table
