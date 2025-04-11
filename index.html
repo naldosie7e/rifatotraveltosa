@@ -2,9 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, minimum-scale=0.1, maximum-scale=5.0, user-scalable=yes">
+    <meta charset="UTF-8" />     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.1, maximum-scale=5.0, user-scalable=yes">
     <title>Rifa</title>
     <style>
         * {
@@ -157,6 +156,7 @@
     <div class="title">
         <h2 style="font-style: italic;">Juega con la loteria de Santander el 16 de mayo</h2>
     </div>
+    
     <div class="modal" id="modal">
         <div class="modal-content">
             <h3>Datos del comprador No <span id="selectedNumberDisplay"></span></h3>
@@ -181,12 +181,10 @@
             const target = event.target;
             if (target.classList.contains('number') && target.classList.contains('sold')) {
                 const number = target.textContent;
-
                 // Set the selected number display
                 document.getElementById('selectedNumberDisplay').textContent = number;
-
                 // Fetch the information of the sold number from the API
-                fetch(`api.php?number=${number}`, {
+                fetch(`api.php?number_sold=${number}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -201,7 +199,6 @@
                             customerNameInput.value = custom_name;
                             customerPhoneInput.value = phone_number;
                             modal.style.display = 'flex';
-
                             // Hide the confirmButton
                             confirmButton.style.display = 'none';
                         } else {
@@ -214,20 +211,42 @@
                     });
             }
         });
-        for (let i = 1; i <= 100; i++) {
-            const numberBox = document.createElement('div');
-            numberBox.classList.add('number');
-            numberBox.textContent = i.toString().padStart(2, '0');
 
-            numberBox.addEventListener('click', () => openModal(i, numberBox));
-            grid.appendChild(numberBox);
-        }
+        // Fetch sold numbers from the API and initialize the grid
+        fetch('api.php', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                const soldNumbers = data.data.map(item => item.number_sold) || [];
+                // Create 100 number boxes
+                for (let i = 0; i <= 99; i++) {
+                    const numberBox = document.createElement('div');
+                    numberBox.classList.add('number');
+                    numberBox.textContent = i.toString().padStart(2, '0');
 
+                    // Check if the number is already sold
+                    if (soldNumbers.includes(i)) {
+                        numberBox.classList.add('sold');
+                    }
+
+                    numberBox.addEventListener('click', () => openModal(i, numberBox));
+                    grid.appendChild(numberBox);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching sold numbers:', error);
+                alert('Error connecting to the API');
+            });
         function openModal(number, element) {
             if (!element.classList.contains('sold')) {
                 selectedNumber = number;
+                // Set the selected number display
+                document.getElementById('selectedNumberDisplay').textContent = number;
                 selectedElement = element;
-
                 modal.style.display = 'flex';
                 // Show the confirmButton
                 confirmButton.style.display = 'block';
@@ -262,7 +281,7 @@
         }
 
         function sendToAPI(number, name, phone) {
-            fetch('http://rifatoloadmoneytotravel.rf.gd/api.php', {
+            fetch('api.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -279,7 +298,6 @@
                     alert('Error al conectar con la API');
                 });
         }
-
     </script>
 </body>
 
