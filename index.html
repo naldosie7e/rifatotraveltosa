@@ -184,7 +184,7 @@
                 // Set the selected number display
                 document.getElementById('selectedNumberDisplay').textContent = number;
                 // Fetch the information of the sold number from the API
-                fetch(`api.php?number_sold=${number}`, {
+                fetch(`https://appcenter.somossainthonore.com/ritosaapi/api.php?number_sold=${number}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -213,7 +213,7 @@
         });
 
         // Fetch sold numbers from the API and initialize the grid
-        fetch('api.php', {
+        fetch('https://appcenter.somossainthonore.com/ritosaapi/api.php', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -281,7 +281,7 @@
         }
 
         function sendToAPI(number, name, phone) {
-            fetch('api.php', {
+            fetch('https://appcenter.somossainthonore.com/ritosaapi/api.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
